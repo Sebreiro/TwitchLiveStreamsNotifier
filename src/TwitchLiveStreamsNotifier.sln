@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2047
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitchLiveStreamsNotifier.API", "TwitchLiveStreamsNotifier.API\TwitchLiveStreamsNotifier.API.csproj", "{1CF2FAA6-00D0-4C8F-83C0-F3033D44EC41}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitchLiveStreamsNotifier.Application", "TwitchLiveStreamsNotifier.Application\TwitchLiveStreamsNotifier.Application.csproj", "{8AE305C6-F789-42EC-A0E2-4ECF08030046}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitchLiveStreamsNotifier.MessageSender", "TwitchLiveStreamsNotifier.MessageSender\TwitchLiveStreamsNotifier.MessageSender.csproj", "{356BF7B7-CC7E-421C-BAA9-DCE0484279A8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitchLiveStreamsNotifier.Services", "TwitchLiveStreamsNotifier.Services\TwitchLiveStreamsNotifier.Services.csproj", "{4EC6188D-3A62-4379-9575-4E8B375F53DC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitchLiveStreamsNotifier.Start", "TwitchLiveStreamsNotifier.Start\TwitchLiveStreamsNotifier.Start.csproj", "{8F76B5BE-3463-412C-A2FD-19924D1C27BB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{AC3CC45A-7260-4437-9F02-92513FEA878B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitchLiveStreamsNotifier.LiveStreamsCache", "TwitchLiveStreamsNotifier.LiveStreamsCache\TwitchLiveStreamsNotifier.LiveStreamsCache.csproj", "{A681A9DB-12E4-4814-84A0-0FEFCDDAEFAE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1CF2FAA6-00D0-4C8F-83C0-F3033D44EC41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CF2FAA6-00D0-4C8F-83C0-F3033D44EC41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CF2FAA6-00D0-4C8F-83C0-F3033D44EC41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CF2FAA6-00D0-4C8F-83C0-F3033D44EC41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AE305C6-F789-42EC-A0E2-4ECF08030046}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AE305C6-F789-42EC-A0E2-4ECF08030046}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AE305C6-F789-42EC-A0E2-4ECF08030046}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AE305C6-F789-42EC-A0E2-4ECF08030046}.Release|Any CPU.Build.0 = Release|Any CPU
+		{356BF7B7-CC7E-421C-BAA9-DCE0484279A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{356BF7B7-CC7E-421C-BAA9-DCE0484279A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{356BF7B7-CC7E-421C-BAA9-DCE0484279A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{356BF7B7-CC7E-421C-BAA9-DCE0484279A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EC6188D-3A62-4379-9575-4E8B375F53DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EC6188D-3A62-4379-9575-4E8B375F53DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EC6188D-3A62-4379-9575-4E8B375F53DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EC6188D-3A62-4379-9575-4E8B375F53DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F76B5BE-3463-412C-A2FD-19924D1C27BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F76B5BE-3463-412C-A2FD-19924D1C27BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F76B5BE-3463-412C-A2FD-19924D1C27BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F76B5BE-3463-412C-A2FD-19924D1C27BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A681A9DB-12E4-4814-84A0-0FEFCDDAEFAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A681A9DB-12E4-4814-84A0-0FEFCDDAEFAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A681A9DB-12E4-4814-84A0-0FEFCDDAEFAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A681A9DB-12E4-4814-84A0-0FEFCDDAEFAE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{356BF7B7-CC7E-421C-BAA9-DCE0484279A8} = {AC3CC45A-7260-4437-9F02-92513FEA878B}
+		{4EC6188D-3A62-4379-9575-4E8B375F53DC} = {AC3CC45A-7260-4437-9F02-92513FEA878B}
+		{A681A9DB-12E4-4814-84A0-0FEFCDDAEFAE} = {AC3CC45A-7260-4437-9F02-92513FEA878B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AC28BC56-D83A-40B0-B505-D1D5A8D475E2}
+	EndGlobalSection
+EndGlobal
