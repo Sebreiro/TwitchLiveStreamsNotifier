@@ -56,3 +56,7 @@ More about [Getting a ClientId](https://dev.twitch.tv/docs/v5/#getting-a-client-
 `streamCacheConfig.timeBetweenNewStreams` - time in **minutes** till the stream cache expiration. When stream goes live, it's get cached. When API request returns stream with the same name and time since last request less then `timeBetweenNewStreams` - it's the same stream, and message won't be send.
 
 `messageSender.url` - url where message will be send
+
+TODO
+---
+  - Cache twitch Games and Users to reduce number of twitch API requests
