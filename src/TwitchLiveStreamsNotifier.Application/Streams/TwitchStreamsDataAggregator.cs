@@ -120,14 +120,12 @@ namespace TwitchLiveStreamsNotifier.Application.Streams
             var gameData = gamesResponse.Data.Find(x => streamData.Game_id == x.Id);
             if (gameData == null)
             {
-                _logger.LogError($"{nameof(gameData)} Is Null; gameId: {streamData.Game_id};UserId: {streamData.User_id} Streamname {streamData.Title}");
-                return null;
+                _logger.LogWarning($"{nameof(gameData)} Is Null; gameId: {streamData.Game_id};UserId: {streamData.User_id}; Streamname {streamData.Title}");
             }
-            if (gameData.Name == null)
+            if (gameData?.Name == null)
                 _logger.LogWarning($"Twitch Game with Id {streamData.Game_id} not found");
 
-            var gameName = gameData.Name ?? gameData.Id;
-           
+            var gameName = gameData?.Name ?? gameData?.Id ?? "Unknown game";
 
             var userData = usersResponse.Data.Find(x => streamData.User_id == x.Id);
             if (userData == null)
