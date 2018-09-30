@@ -16,7 +16,7 @@ namespace TwitchLiveStreamsNotifier.Application.Streams
 {
     public class TwitchStreamsDataAggregator: ITwitchStreamsDataAggregator
     {
-        public const string TwitchUrl = "https://www.twitch.tv/";
+        private const string TwitchUrl = "https://www.twitch.tv/";
 
         private readonly ILogger _logger;
         private readonly ILoggerFactory _loggerFactory;
@@ -36,7 +36,7 @@ namespace TwitchLiveStreamsNotifier.Application.Streams
                 throw new InvalidOperationException($"TwitchConfig {config.ClientId} is missing");
 
             if (config.Logins == null)
-                throw new InvalidOperationException($"TwitchCOnfig {config.Logins} is null");
+                throw new InvalidOperationException($"TwitchConfig {config.Logins} is null");
 
             if (config.Logins.Count == 0)
             {
