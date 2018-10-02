@@ -17,9 +17,9 @@ namespace TwitchLiveStreamsNotifier.API.Helix
         private readonly ILogger _logger;
 
         private const string ApiUrl = "https://api.twitch.tv";
-        private const string StreamsPath = "/helix/streams";
-        private const string GamesPath = "/helix/games";
-        private const string UsersPath = "/helix/users";
+        private const string StreamsPath = "helix/streams";
+        private const string GamesPath = "helix/games";
+        private const string UsersPath = "helix/users";
 
         private readonly string _clientId;
         
