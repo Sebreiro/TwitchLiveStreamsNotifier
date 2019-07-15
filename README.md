@@ -1,34 +1,34 @@
 Twitch Live Streams Notifier
 ===
-ASP.<span></span>NET Core 2.x console application that gets information about active twitch streams and sends message to the REST endpoint  
+.NET Core console application that gets information about active twitch streams and sends message to the REST endpoint  
 
-### Note ###
+### **Note**
 Startup project is _TwitchLiveStreamsNotifier.Start_
 
 Message format: `$"{StreamerLogin}; {GameName}; {StartedAt}; {StreamType}; {StreamName}; {ChannelUrl}";`  
 `StreamType` is _'live'_ if stream is live and **empty** if it's a premiere (prerecorded) video  
 
-Application was developed to send messages to [TelegramBotMessageSender](https://github.com/Sebreiro/TelegramBotMessageSender)
+Application was developed to send messages to the [TelegramBotMessageSender](https://github.com/Sebreiro/TelegramBotMessageSender)
 
-Config
----
+## **Config**
+
 _appsettings.json_  - main config and it's requeired  
 _nlog.config_  - logging config and it's required too
 
-### Nlog.config ###
+### **Nlog.config**
 By default it's configured to write Logs to Console with minimal level "Info" and write all logs to the file  
 More information about nlog can be found in [NLog wiki](https://github.com/NLog/NLog/wiki)
 
-### appsettings.json ###
+### **appsettings.json**
 All config parameters (except `requestInterval`) can be changed in real time.
 
 File structure:  
-~~~
+~~~JSON
 {
   "twitchConfig": {
     "clientId": "xxxxxxxxxxxxxxxx",
     "logins": [
-      "SovietWomble",      
+      "SovietWomble",
       "shroud",
       "zondalol",
       "xbox_alive"
@@ -41,6 +41,7 @@ File structure:
     "timeBetweenNewStreams":  9
   },
   "messageSender": {
+    "channelName": "<FictionalChannelNameForMappingToTheTelegramChannelId>",
     "url": "http://<host>:<port>/api/Message/SendMessage"
   }
 }
@@ -56,6 +57,7 @@ More about [Getting a ClientId](https://dev.twitch.tv/docs/v5/#getting-a-client-
 `streamCacheConfig.timeBetweenNewStreams` - time in **minutes** till the stream cache expiration. When stream goes live, it's get cached. When API request returns stream with the same name and time since last request less then `timeBetweenNewStreams` - it's the same stream, and message won't be send.
 
 `messageSender.url` - url where message will be send
+`messageSender.channelName` - fictional channel name that maps to the telegram channelId in [TelegramBotMessageSender](https://github.com/Sebreiro/TelegramBotMessageSender)
 
 TODO
 ---
