@@ -10,6 +10,9 @@ Message format: `$"{StreamerLogin}; {GameName}; {StartedAt}; {StreamType}; {Stre
 
 Application was developed to send messages to the [TelegramBotMessageSender](https://github.com/Sebreiro/TelegramBotMessageSender)
 
+Docker and Docker Compose files are located in the [separate repository](https://github.com/Sebreiro/TwitchLiveStreamsNotifier_docker)  
+Docker Image could be found in the [docker hub repository](https://hub.docker.com/r/sebreiro/twitchlivestreamsnotifier_docker)
+
 ## **Config**
 
 _appsettings.json_  - main config and it's requeired  
