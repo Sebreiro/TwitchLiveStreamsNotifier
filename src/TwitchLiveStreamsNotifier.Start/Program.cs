@@ -21,9 +21,9 @@ namespace TwitchLiveStreamsNotifier.Start
 
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddLogging((builder) => builder.SetMinimumLevel(LogLevel.Trace));
+            var configuration = OptionsConfigurator.Configure(serviceCollection);
 
-            OptionsConfigurator.Configure(serviceCollection);
+            LoggingConfiguration.Configure(serviceCollection, configuration);
 
             var serviceProvider = ContainerConfigurator.Configure(serviceCollection);
 

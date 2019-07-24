@@ -7,19 +7,21 @@ using TwitchLiveStreamsNotifier.MessageSender.Config;
 
 namespace TwitchLiveStreamsNotifier.Start.Initialization
 {
-    public class OptionsConfigurator
+    public static class OptionsConfigurator
     {
         private static IConfigurationRoot Config() => new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("Config/appsettings.json", optional: false, reloadOnChange: true)
             .Build();
 
-        public static void Configure(IServiceCollection serviceCollection)
+        public static IConfiguration Configure(IServiceCollection serviceCollection)
         {
             serviceCollection.AddOptions();
             var configurationRoot = Config();
 
             AddConfigParts(serviceCollection, configurationRoot);
+            
+            return configurationRoot;
         }
 
         private static void AddConfigParts(IServiceCollection serviceCollection,IConfigurationRoot configurationRoot)
