@@ -32,17 +32,16 @@ namespace TwitchLiveStreamsNotifier.MessageSender
             var requestUrl = _config.Url;
             var client = new HttpClient();
 
-            var httpContent = new StringContent($"{{message:\"{message}\"}}", Encoding.UTF8, "application/json");
+            var httpContent = new StringContent($"{{channelName:\"{_config.ChannelName}\", message:\"{message}\"}}", Encoding.UTF8, "application/json");
             try
             {
                 var result = await client.PostAsync(requestUrl, httpContent);
-                if (result.StatusCode != System.Net.HttpStatusCode.OK)
-                    _logger.LogError($"{result}");
 
+                result.EnsureSuccessStatusCode();
             }
-            catch (Exception ex) when (ex.InnerException is SocketException)
+            catch (Exception ex) when (ex.InnerException is SocketException || ex is HttpRequestException)
             {
-                _logger.LogError($"RequestUrl: {requestUrl};{Environment.NewLine}RequestMessage: {message}{Environment.NewLine}Error: {ex.Message}");
+                _logger.LogError(ex, $"RequestUrl: {requestUrl};{Environment.NewLine}RequestMessage: {message}{Environment.NewLine}");
             }
             catch (Exception ex)
             {
@@ -55,6 +54,9 @@ namespace TwitchLiveStreamsNotifier.MessageSender
         {
             if (string.IsNullOrWhiteSpace(config.Url))
                 throw new InvalidOperationException("MessageSenderConfig Url is missing");
+            
+            if (string.IsNullOrWhiteSpace(config.ChannelName))
+                throw new InvalidOperationException("MessageSenderConfig ChannelName is missing");
 
             return true;
         }
