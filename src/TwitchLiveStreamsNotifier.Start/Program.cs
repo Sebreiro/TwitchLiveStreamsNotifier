@@ -27,14 +27,11 @@ namespace TwitchLiveStreamsNotifier.Start
 
             var serviceProvider = ContainerConfigurator.Configure(serviceCollection);
 
-            NLogConfigurator.Configure(serviceProvider);
-
             var application = serviceProvider.GetService<Application.Application>();
 
             application.Start();
 
             await Task.Delay(-1, cts.Token);
-            NLog.LogManager.Shutdown();
 
             Console.WriteLine("Closing application");
             return 0;
