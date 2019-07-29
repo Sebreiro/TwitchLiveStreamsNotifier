@@ -6,6 +6,6 @@ namespace TwitchLiveStreamsNotifier.Application.Factory
 {
     public interface IMessageJobFactory
     {
-        Func<Task<List<string>>> GetStreamsMesageJob();
+        Func<Task<List<string>>> GetStreamsMessageJob();
     }
 }

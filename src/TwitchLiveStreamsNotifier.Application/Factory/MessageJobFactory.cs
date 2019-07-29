@@ -19,7 +19,7 @@ namespace TwitchLiveStreamsNotifier.Application.Factory
             _streamsCache = streamsCache;
         }
 
-        public Func<Task<List<string>>> GetStreamsMesageJob()
+        public Func<Task<List<string>>> GetStreamsMessageJob()
         {
             Func<Task<List<string>>> job = async () =>
             {

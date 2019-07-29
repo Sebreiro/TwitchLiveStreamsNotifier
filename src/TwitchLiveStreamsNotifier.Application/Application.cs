@@ -40,7 +40,7 @@ namespace TwitchLiveStreamsNotifier.Application
         {
             try
             {
-                var messageJob = _messageJobFactory.GetStreamsMesageJob();
+                var messageJob = _messageJobFactory.GetStreamsMessageJob();
 
                 var messages = await messageJob.Invoke();
                 if (messages == null)
@@ -51,7 +51,7 @@ namespace TwitchLiveStreamsNotifier.Application
                     if (string.IsNullOrWhiteSpace(message)) continue;
 
                     _logger.LogInformation($"LiveStreamsMessage: {message}");
-                    _messageSender.Send(message);
+                    await _messageSender.Send(message);
                 }
             }
             catch (Exception ex)
