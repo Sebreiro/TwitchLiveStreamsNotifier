@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using TwitchLiveStreamsNotifier.MessageSender.Config;
 
 namespace TwitchLiveStreamsNotifier.MessageSender
@@ -32,21 +33,28 @@ namespace TwitchLiveStreamsNotifier.MessageSender
             var requestUrl = _config.Url;
             var client = new HttpClient();
 
-            var httpContent = new StringContent($"{{channelName:\"{_config.ChannelName}\", message:\"{message}\"}}", Encoding.UTF8, "application/json");
+            var fullMessage = JsonConvert.SerializeObject(new {channelName = _config.ChannelName, message});
+
+            var httpContent = new StringContent(fullMessage, Encoding.UTF8, "application/json");
+            
             try
             {
                 var result = await client.PostAsync(requestUrl, httpContent);
 
-                result.EnsureSuccessStatusCode();
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = await result.Content.ReadAsStringAsync();
+                    _logger.LogError("RequestUrl: {requestUrl}; " +
+                                     "RequestMessage: {requestMessage}; " +
+                                     "StatusCode {statusCode}; " +
+                                     "Reason {reasonPhrase}; Response {responseContent}",
+                        requestUrl, message, result.StatusCode, result.ReasonPhrase, responseContent);
+                }
             }
-            catch (Exception ex) when (ex.InnerException is SocketException || ex is HttpRequestException)
+            catch (Exception ex) when (ex.InnerException is SocketException)
             {
-                _logger.LogError(ex, $"RequestUrl: {requestUrl};{Environment.NewLine}RequestMessage: {message}{Environment.NewLine}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.ToString());
-                throw;
+
+                _logger.LogError(ex, $"RequestUrl: {requestUrl};{Environment.NewLine}RequestMessage: {message}");
             }
         }
 
