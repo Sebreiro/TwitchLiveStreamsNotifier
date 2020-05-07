@@ -15,7 +15,7 @@ Docker Image could be found in the [docker hub repository](https://hub.docker.co
 
 ## **Config**
 
-_appsettings.json_  - main config and it's requeired  
+_appsettings.json_  - main config and it's required  
 _nlog.config_  - logging config and it's required too
 
 ### **Nlog.config**
@@ -30,6 +30,7 @@ File structure:
 {
   "twitchConfig": {
     "clientId": "xxxxxxxxxxxxxxxx",
+    "clientSecret": "xxxxxxxxxx",
     "logins": [
       "SovietWomble",
       "shroud",
@@ -51,6 +52,7 @@ File structure:
 ~~~
 
 `twitchConfig.clientId` - twitch clientId.  
+`twitchConfig.clientSecret` - twitch clientSecret  
 More about [Getting a ClientId](https://dev.twitch.tv/docs/v5/#getting-a-client-id)
 
 `twitchConfig.logins` - array of twitch streamers logins. You can get one from streamer page URL. Limit is 100
