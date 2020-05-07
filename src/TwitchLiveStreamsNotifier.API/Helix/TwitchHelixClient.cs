@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using TwitchLiveStreamsNotifier.API.Parameters.Authorization;
 using TwitchLiveStreamsNotifier.API.Parameters.Games;
 using TwitchLiveStreamsNotifier.API.Parameters.Initialization;
 using TwitchLiveStreamsNotifier.API.Parameters.Streams;
@@ -15,20 +18,29 @@ namespace TwitchLiveStreamsNotifier.API.Helix
     public class TwitchHelixClient
     {
         private readonly ILogger _logger;
+        private readonly HttpClient _httpClient;
 
         private const string ApiUrl = "https://api.twitch.tv";
         private const string StreamsPath = "helix/streams";
         private const string GamesPath = "helix/games";
         private const string UsersPath = "helix/users";
 
+        private const string TokenValidationUrl = "https://id.twitch.tv/oauth2/";
+        private const string ValidatePath = "validate";
+        private const string ObtainTokenPath = "token";
+
         private readonly string _clientId;
-        
+        private readonly string _clientSecret;
+
         public TwitchHelixClient(HelixInitData initData, ILogger<TwitchHelixClient> logger)
         {
             _logger = logger;
 
             CheckInitData(initData);
             _clientId = initData.ClientId;
+            _clientSecret = initData.ClientSecret;
+
+            _httpClient = GetHttpClient();
         }
 
         private bool CheckInitData(HelixInitData data)
@@ -36,10 +48,14 @@ namespace TwitchLiveStreamsNotifier.API.Helix
             if (string.IsNullOrWhiteSpace(data.ClientId))
                 throw new ArgumentException($"{nameof(data.ClientId)} is missing");
 
+            if (string.IsNullOrWhiteSpace(data.ClientSecret))
+                throw new ArgumentException($"{nameof(data.ClientId)} is missing");
+
             return true;
         }
 
         #region Users
+
         public async Task<TwitchUsersResponse> GetUsersDataByLogin(List<string> logins)
         {
             if (logins == null)
@@ -49,7 +65,7 @@ namespace TwitchLiveStreamsNotifier.API.Helix
                 _logger.LogInformation($"{nameof(logins)} count is 0");
                 return null;
             }
-                
+
             var parameters = MakeParameters("login", logins);
             return await GetUsersData(parameters);
         }
@@ -74,6 +90,7 @@ namespace TwitchLiveStreamsNotifier.API.Helix
             var data = await GetRequestData<TwitchUsersResponse>(fullUrl);
             return data;
         }
+
         #endregion
 
         #region Streams
@@ -101,6 +118,7 @@ namespace TwitchLiveStreamsNotifier.API.Helix
             var data = await GetRequestData<TwitchStreamsResponse>(fullUrl);
             return data;
         }
+
         #endregion
 
         #region Games
@@ -117,7 +135,6 @@ namespace TwitchLiveStreamsNotifier.API.Helix
 
             var parameters = MakeParameters("id", ids);
             return await GetGamesData(parameters);
-
         }
 
         private async Task<TwitchGamesResponse> GetGamesData(string requestParameters)
@@ -152,7 +169,7 @@ namespace TwitchLiveStreamsNotifier.API.Helix
         {
             _logger.LogTrace($"ApiRequest URL: {url}");
 
-            var client = GetHttpClient();
+            var client = _httpClient;
 
             var response = await client.GetAsync(url);
 
@@ -170,6 +187,8 @@ namespace TwitchLiveStreamsNotifier.API.Helix
             T data = null;
             try
             {
+                await ValidateAuthorizationToken();
+
                 var content = await MakeApiRequest(url);
 
                 data = JsonConvert.DeserializeObject<T>(content);
@@ -180,6 +199,61 @@ namespace TwitchLiveStreamsNotifier.API.Helix
             }
 
             return data;
+        }
+
+        /// <summary>
+        /// Validate OAuth token
+        /// </summary>
+        private async Task ValidateAuthorizationToken()
+        {
+            var currentToken = _httpClient.DefaultRequestHeaders.Authorization?.Parameter;
+            if (string.IsNullOrWhiteSpace(currentToken))
+            {
+                throw new InvalidOperationException("Unable to get OAuth token from http header. You must authorize before making requests");
+            }
+
+            var fullUrl = $"{TokenValidationUrl}{ValidatePath}";
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, fullUrl);
+            request.Headers.Authorization = new AuthenticationHeaderValue("OAuth", currentToken);
+            var response = await _httpClient.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new ValidationException($"OAuth token validation failed for {fullUrl} with StatusCode: {response.StatusCode}. Reason: {response.ReasonPhrase}.");
+            }
+
+            _logger.LogDebug("OAuth token was successfully validated");
+        }
+
+        /// <summary>
+        /// Get Bearer token and add it to the Authorization http header
+        /// </summary>
+        /// <returns>Token</returns>
+        public async Task Authorize()
+        {
+            var currentToken = _httpClient.DefaultRequestHeaders.Authorization?.Parameter;
+            if (!string.IsNullOrWhiteSpace(currentToken))
+            {
+                return;
+            }
+
+            var url = $"{TokenValidationUrl}{ObtainTokenPath}";
+            var fullUrl = $"{url}?client_id={_clientId}&client_secret={_clientSecret}&grant_type=client_credentials";
+
+            _logger.LogDebug($"Obtaining OAuth token. url: {url}");
+            var response = await _httpClient.PostAsync(fullUrl, null);
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<AuthorizationTokenResponse>(content);
+
+            if (data == null || string.IsNullOrWhiteSpace(data.Access_token))
+            {
+                throw new Exception($"Unable to obtain OAuth token for ClientId {_clientId}. Url: {url}.");
+            }
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", data.Access_token);
         }
     }
 }

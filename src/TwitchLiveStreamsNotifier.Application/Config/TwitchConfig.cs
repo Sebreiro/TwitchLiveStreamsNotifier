@@ -5,6 +5,8 @@ namespace TwitchLiveStreamsNotifier.Application.Config
     public class TwitchConfig
     {
         public string ClientId { get; set; }
+        
+        public string ClientSecret { get; set; }
 
         public List<string> Logins { get; set; }
     }
