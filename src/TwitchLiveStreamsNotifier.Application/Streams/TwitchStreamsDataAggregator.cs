@@ -14,7 +14,7 @@ using TwitchLiveStreamsNotifier.API.Parameters.Users;
 
 namespace TwitchLiveStreamsNotifier.Application.Streams
 {
-    public class TwitchStreamsDataAggregator: ITwitchStreamsDataAggregator
+    public class TwitchStreamsDataAggregator : ITwitchStreamsDataAggregator
     {
         private const string TwitchUrl = "https://www.twitch.tv/";
 
@@ -34,6 +34,9 @@ namespace TwitchLiveStreamsNotifier.Application.Streams
         {
             if (string.IsNullOrWhiteSpace(config.ClientId))
                 throw new InvalidOperationException($"TwitchConfig {config.ClientId} is missing");
+
+            if (string.IsNullOrWhiteSpace(config.ClientSecret))
+                throw new InvalidOperationException($"TwitchConfig {config.ClientSecret} is missing");
 
             if (config.Logins == null)
                 throw new InvalidOperationException($"TwitchConfig {config.Logins} is null");
@@ -59,9 +62,12 @@ namespace TwitchLiveStreamsNotifier.Application.Streams
 
             var initData = new HelixInitData()
             {
-                ClientId = config.ClientId
+                ClientId = config.ClientId,
+                ClientSecret = config.ClientSecret,
             };
             var twitchClient = new TwitchHelixClient(initData, _loggerFactory.CreateLogger<TwitchHelixClient>());
+
+            await twitchClient.Authorize();
 
             var streamsTask = twitchClient.GetStreamsDataByLogin(config.Logins);
             //TODO Make cache for users and games
@@ -75,6 +81,7 @@ namespace TwitchLiveStreamsNotifier.Application.Streams
                 _logger.LogDebug($"{nameof(streamsResult)} is null");
                 return null;
             }
+
             if (streamsResult.Data.Count == 0)
             {
                 _logger.LogInformation($"No one streaming right now");
@@ -87,15 +94,15 @@ namespace TwitchLiveStreamsNotifier.Application.Streams
                 _logger.LogDebug($"{nameof(usersResult)} is null");
                 return null;
             }
+
             if (usersResult.Data.Count == 0)
             {
                 _logger.LogWarning($"{nameof(usersResult)} Data count is 0");
                 return null;
-
             }
 
             var gameIds = streamsResult.Data.Select(x => x.Game_id).ToList();
-            
+
             var gamesResult = await twitchClient.GetGamesDataById(gameIds);
             if (gamesResult == null)
             {
@@ -122,6 +129,7 @@ namespace TwitchLiveStreamsNotifier.Application.Streams
             {
                 _logger.LogWarning($"{nameof(gameData)} Is Null; gameId: {streamData.Game_id};UserId: {streamData.User_id}; StreamName {streamData.Title}");
             }
+
             if (gameData?.Name == null)
                 _logger.LogWarning($"Twitch Game with Id {streamData.Game_id} not found");
 
@@ -132,6 +140,7 @@ namespace TwitchLiveStreamsNotifier.Application.Streams
             {
                 throw new InvalidOperationException($"{nameof(userData)} Is Null; gameId: {streamData.Game_id};UserId: {streamData.User_id} StreamName {streamData.Title}");
             }
+
             if (userData.Login == null)
             {
                 _logger.LogError($"Twitch User with Id {streamData.User_id} not found");
