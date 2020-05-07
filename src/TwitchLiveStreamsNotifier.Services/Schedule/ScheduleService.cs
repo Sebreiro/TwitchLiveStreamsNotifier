@@ -36,7 +36,7 @@ namespace TwitchLiveStreamsNotifier.Services.Schedule
                 throw new InvalidOperationException("Job is null");
 
             if (repeatTime == 0)
-                throw new InvalidOperationException($"{nameof(repeatTime)} shoud be more than 0");
+                throw new InvalidOperationException($"{nameof(repeatTime)} should be more than 0");
 
 
             JobManager.AddJob(job, (s) => s.WithName(jobName).ToRunNow().AndEvery(repeatTime).Minutes());
